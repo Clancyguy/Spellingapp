@@ -1,19 +1,53 @@
 {
-  "name": "sentence-builder",
-  "version": "1.0.0",
-  "description": "A standalone educational sentence builder app for students.",
-  "main": "index.html",
-  "scripts": {
-    "start": "npx serve ."
-  },
-  "keywords": [
-    "education",
-    "aac",
-    "react"
-  ],
-  "author": "Teacher",
-  "license": "MIT",
-  "devDependencies": {
-    "serve": "^14.2.0"
-  }
+  "wordCategories": [
+    {
+      "id": "1",
+      "name": "Actions",
+      "color": "bg-white",
+      "borderColor": "border-gray-300",
+      "words": [
+        { "text": "I like", "icon": "🙂", "isImage": false },
+        { "text": "I love", "icon": "❤️", "isImage": false }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Food",
+      "color": "bg-yellow-100",
+      "borderColor": "border-yellow-300",
+      "words": [
+        { "text": "pizza", "icon": "🍕", "isImage": false },
+        { "text": "chips", "icon": "🍟", "isImage": false }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Drinks",
+      "color": "bg-cyan-100",
+      "borderColor": "border-cyan-300",
+      "words": [
+        { "text": "milk", "icon": "🥛", "isImage": false }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Places",
+      "color": "bg-orange-100",
+      "borderColor": "border-orange-300",
+      "words": [
+        { "text": "school", "icon": "🏫", "isImage": false },
+        { "text": "park", "icon": "🌳", "isImage": false }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "Feelings",
+      "color": "bg-purple-100",
+      "borderColor": "border-purple-300",
+      "words": [
+        { "text": "happy", "icon": "😊", "isImage": false },
+        { "text": "tired", "icon": "😴", "isImage": false }
+      ]
+    }
+  ]
 }

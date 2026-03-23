@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sniderbuilder</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #0078b4; height: 100vh; font-family: sans-serif; }
+        #root { height: 100%; }
+        .workspace-content { display: flex; flex-wrap: wrap; align-content: flex-start; gap: 2rem; align-items: flex-end; min-height: 200px; }
+        .hide-scrollbar::-webkit-scrollbar { height: 8px; }
+        .hide-scrollbar::-webkit-scrollbar-thumb { background: #dcc8af; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useRef } = React;
+        
+        const Icons = {
+            Settings: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>,
+            Volume2: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>,
+            Plus: () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+            Trash: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>,
+            XCircle: () => <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>,
+            Edit3: () => <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        };
+
+        const App = () => {
+            const [sentence, setSentence] = useState([]);
+            const [isEditMode, setIsEditMode] = useState(false);
+            const [editingWord, setEditingWord] = useState(null); 
+            const [editingCategory, setEditingCategory] = useState(null);
+            const fileInputRef = useRef(null);
+            
+            const [wordCategories, setWordCategories] = useState([
+                { id: '1', name: 'Actions', color: 'bg-white', borderColor: 'border-gray-300', words: [{ text: 'I like', icon: '🙂', isImage: false }, { text: 'I love', icon: '❤️', isImage: false }] },
+                { id: '2', name: 'Food', color: 'bg-yellow-100', borderColor: 'border-yellow-300', words: [{ text: 'pizza', icon: '🍕', isImage: false }, { text: 'chips', icon: '🍟', isImage: false }] },
+                { id: '3', name: 'Drinks', color: 'bg-cyan-100', borderColor: 'border-cyan-300', words: [{ text: 'milk', icon: '🥛', isImage: false }] },
+                { id: '4', name: 'Places', color: 'bg-orange-100', borderColor: 'border-orange-300', words: [{ text: 'school', icon: '🏫', isImage: false }, { text: 'park', icon: '🌳', isImage: false }] },
+                { id: '5', name: 'Feelings', color: 'bg-purple-100', borderColor: 'border-purple-300', words: [{ text: 'happy', icon: '😊', isImage: false }, { text: 'tired', icon: '😴', isImage: false }] }
+            ]);
+
+            const speakSentence = () => {
+                const text = sentence.map(w => w.text).join(' ');
+                if (!text) return;
+                window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+            };
+
+            const handleFileUpload = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => setEditingWord(prev => ({ ...prev, icon: reader.result, isImage: true }));
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            return (
+                <div className="flex flex-col h-screen bg-[#0078b4]">
+                    <div className="bg-white p-2 flex items-center justify-between shadow-md">
+                        <div className="flex gap-4">
+                            <button onClick={() => setIsEditMode(!isEditMode)} className={`flex flex-col items-center px-4 py-1 rounded ${isEditMode ? 'bg-orange-500 text-white' : 'text-gray-600'}`}>
+                                <Icons.Settings /><span className="text-[10px] font-bold uppercase">{isEditMode ? 'Exit Edit' : 'Edit App'}</span>
+                            </button>
+                            <button onClick={speakSentence} disabled={isEditMode || !sentence.length} className="flex flex-col items-center px-4 py-1 rounded text-blue-600 disabled:opacity-20">
+                                <Icons.Volume2 /><span className="text-[10px] font-bold uppercase">Speak</span>
+                            </button>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            {isEditMode && <button onClick={() => setWordCategories([...wordCategories, { id: Date.now().toString(), name: 'New Section', color: 'bg-green-100', borderColor: 'border-green-300', words: [] }])} className="bg-green-600 text-white px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1"><Icons.Plus /> Add Section</button>}
+                            <div className="text-[#0078b4] font-black text-xl italic pr-4">Sniderbuilder</div>
+                        </div>
+                    </div>
+
+                    <div className="flex-grow bg-white m-4 rounded-xl shadow-inner relative flex flex-col overflow-y-auto p-8">
+                        <div className="workspace-content">
+                            {sentence.length === 0 && <div className="text-gray-200 text-3xl font-bold w-full text-center py-20 select-none uppercase tracking-widest">{isEditMode ? "Edit Mode Active" : "Click words to build"}</div>}
+                            {sentence.map((word, idx) => (
+                                <div key={idx} className="flex flex-col items-center">
+                                    {word.isImage ? <img src={word.icon} className="h-24 w-24 object-contain mb-2" /> : <span className="text-7xl mb-2">{word.icon}</span>}
+                                    <span className="text-2xl font-bold text-gray-800">{word.text}</span>
+                                </div>
+                            ))}
+                        </div>
+                        {!isEditMode && sentence.length > 0 && (
+                            <div className="absolute bottom-6 right-6 flex gap-3">
+                                <button onClick={() => setSentence(sentence.slice(0, -1))} className="bg-red-500 text-white p-4 rounded-2xl shadow-lg"><Icons.XCircle /></button>
+                                <button onClick={() => setSentence([])} className="bg-gray-800 text-white px-8 py-4 rounded-2xl shadow-lg font-black tracking-widest">CLEAR</button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="bg-[#f5e6d3] p-4 flex gap-4 overflow-x-auto min-h-[35vh] border-t-4 border-[#dcc8af] hide-scrollbar">
+                        {wordCategories.map((cat) => (
+                            <div key={cat.id} className="flex flex-col gap-2 min-w-[180px]">
+                                <div className="flex items-center justify-between px-1 mb-1">
+                                    <div className="text-[10px] font-black text-gray-400 uppercase">{cat.name}</div>
+                                    {isEditMode && <button onClick={() => setEditingCategory({...cat})} className="text-orange-500"><Icons.Edit3 /></button>}
+                                </div>
+                                {cat.words.map((word, idx) => (
+                                    <button key={idx} onClick={() => isEditMode ? setEditingWord({catId: cat.id, wordIdx: idx, ...word}) : setSentence([...sentence, word])} className={`${cat.color} ${cat.borderColor} border-2 p-3 rounded-xl flex justify-between items-center shadow-sm relative`}>
+                                        <span className="font-bold text-gray-700 leading-tight flex-1 text-left">{word.text}</span>
+                                        {word.isImage ? <img src={word.icon} className="h-10 w-10 object-contain" /> : <span className="text-2xl">{word.icon}</span>}
+                                    </button>
+                                ))}
+                                {isEditMode && <button onClick={() => setWordCategories(wordCategories.map(c => c.id === cat.id ? {...c, words: [...c.words, { text: 'New Word', icon: '❓', isImage: false }]} : c))} className="border-2 border-dashed border-gray-400 text-gray-500 p-3 rounded-xl flex items-center justify-center gap-2"><Icons.Plus /> Add Word</button>}
+                            </div>
+                        ))}
+                    </div>
+
+                    {editingWord && (
+                        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                            <div className="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl space-y-5">
+                                <h3 className="text-2xl font-black text-gray-800">Edit Word</h3>
+                                <input className="w-full border-2 border-gray-100 rounded-xl p-4 text-xl font-bold outline-none" value={editingWord.text} onChange={e => setEditingWord({...editingWord, text: e.target.value})} />
+                                <div className="bg-gray-50 p-6 rounded-2xl flex flex-col items-center border-2 border-dashed">
+                                    <div className="h-24 w-24 bg-white rounded-xl shadow-inner mb-4 flex items-center justify-center overflow-hidden">{editingWord.isImage ? <img src={editingWord.icon} className="w-full h-full object-contain" /> : <span className="text-6xl">{editingWord.icon}</span>}</div>
+                                    <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileUpload} />
+                                    <button onClick={() => fileInputRef.current.click()} className="bg-white border-2 border-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl w-full mb-4">Upload Photo</button>
+                                    <input className="w-full border-2 border-gray-100 rounded-xl p-2 text-center text-2xl" value={!editingWord.isImage ? editingWord.icon : ''} placeholder="Emoji" onChange={e => setEditingWord({...editingWord, icon: e.target.value, isImage: false})} />
+                                </div>
+                                <div className="flex gap-3">
+                                    <button onClick={() => { setWordCategories(wordCategories.map(c => c.id === editingWord.catId ? { ...c, words: c.words.map((w, i) => i === editingWord.wordIdx ? { text: editingWord.text, icon: editingWord.icon, isImage: editingWord.isImage } : w) } : c)); setEditingWord(null); }} className="flex-grow bg-blue-600 text-white font-black py-4 rounded-2xl uppercase">Save</button>
+                                    <button onClick={() => { setWordCategories(wordCategories.map(c => c.id === editingWord.catId ? { ...c, words: c.words.filter((_, i) => i !== editingWord.wordIdx) } : c)); setEditingWord(null); }} className="bg-red-100 text-red-600 p-4 rounded-2xl"><Icons.Trash /></button>
+                                    <button onClick={() => setEditingWord(null)} className="font-bold text-gray-400 px-4">Exit</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {editingCategory && (
+                        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+                            <div className="bg-white p-8 rounded-3xl w-full max-w-md shadow-2xl space-y-5">
+                                <h3 className="text-2xl font-black text-gray-800">Edit Section</h3>
+                                <input className="w-full border-2 border-gray-100 rounded-xl p-4 text-xl font-bold outline-none" value={editingCategory.name} onChange={e => setEditingCategory({...editingCategory, name: e.target.value})} />
+                                <div className="flex gap-3">
+                                    <button onClick={() => { setWordCategories(wordCategories.map(c => c.id === editingCategory.id ? { ...c, name: editingCategory.name } : c)); setEditingCategory(null); }} className="flex-grow bg-blue-600 text-white font-black py-4 rounded-2xl uppercase">Save Title</button>
+                                    <button onClick={() => { setWordCategories(wordCategories.filter(c => c.id !== editingCategory.id)); setEditingCategory(null); }} className="bg-red-100 text-red-600 p-4 rounded-2xl"><Icons.Trash /></button>
+                                    <button onClick={() => setEditingCategory(null)} className="font-bold text-gray-400 px-4">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
