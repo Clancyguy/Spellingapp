@@ -1,0 +1,19 @@
+{
+  "name": "sentence-builder",
+  "version": "1.0.0",
+  "description": "A standalone educational sentence builder app for students.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "keywords": [
+    "education",
+    "aac",
+    "react"
+  ],
+  "author": "Teacher",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}
